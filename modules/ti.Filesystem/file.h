@@ -16,6 +16,10 @@
 #include <shlobj.h>
 #elif OS_OSX
 #import <Foundation/Foundation.h>
+#elif OS_LINUX
+#include <sys/inotify.h>
+#define INOTIFY_EVENT_SIZE (sizeof(struct inotify_event))
+#define INOTIFY_BUFLEN (1024 * (INOTIFY_EVENT_SIZE + 16))
 #endif
 
 #include <string>
@@ -36,6 +40,8 @@ namespace ti
 
 	private:
 		std::string filename;
+		int fd;			// file descriptor for inotify
+		int wd;			// watch descriptor for inotify
 
 		void Open(const ValueList& args, KValueRef result);
 		void ToString(const ValueList& args, KValueRef result);
@@ -71,6 +77,7 @@ namespace ti
 		void SetReadonly(const ValueList& args, KValueRef result);
 		void SetWritable(const ValueList& args, KValueRef result);
 		void Unzip(const ValueList& args, KValueRef result);
+		void Watch(KMethodRef callback, uint32_t mask, KValueRef result);
 	};
 }
 

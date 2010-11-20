@@ -78,6 +78,7 @@ namespace ti
 		this->SetMethod("setWriteable", &File::SetWritable);
 		this->SetMethod("setWritable", &File::SetWritable);
 		this->SetMethod("unzip", &File::Unzip);
+		// this->SetMethod("watch", &File::Watch);
 	}
 
 	File::~File()
@@ -776,5 +777,23 @@ namespace ti
 		{
 			throw ValueException::FromString(exc.displayText());
 		}
+	}
+
+	void File::Watch(KMethodRef callback, uint32_t mask, KValueRef result)
+	{
+		fd = inotify_init();
+		if (fd == -1)
+		{
+			result->SetBool(false);
+			throw ValueException::FromString("inotify init failed");
+		}
+		wd = inotify_add_watch(fd, this->filename.c_str(), mask);
+		// read and callback will follow here
+		// need to allocate this buffer!!!!!
+
+		// len = read(fd, buffer, INOTIFY_BUFLEN);
+
+		result->SetBool(true);
+		// callback();
 	}
 }
