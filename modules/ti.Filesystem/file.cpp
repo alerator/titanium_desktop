@@ -791,14 +791,9 @@ namespace ti
 		// read and callback will follow here
 		// need to allocate this buffer!!!!!
 
-		// this will be used to perform the read of inotify, will
-		// use fd in our File class.
 		// len = read(fd, buffer, INOTIFY_BUFLEN);
-		// will add this for the callback
-		// Host::RunOnMainThread(callback, valueList, false)// callback();
-
-		// Host::RunOnMainThread(KMethodRef, ValueList &args, false)
 
 		result->SetBool(true);
+		// callback();
 	}
 }
