@@ -787,13 +787,13 @@ namespace ti
 		KMethodRef work; // (new kroll::KFunctionPtrMethod(&File::NotifyWorker));
 
 		// I want to run this off/away from the main thread, and will notify back using this.
-		// I'm not sure what to use. Poco::Thread ???
+		// I'm not sure what to use. Poco::Thread ??? Anyway at this point I would like to
+		// start a thread that will take care of the inotify work.
 		RunOnMainThread(work, nargs, false);
 
 		result->SetBool(true);
 	}
 
-	// void File::NotifyWorker(KMethodRef ncallback, const ValueList& nargs, uint32_t nmask)
 	void File::NotifyWorker()
 	{
 		this->fd = inotify_init();
