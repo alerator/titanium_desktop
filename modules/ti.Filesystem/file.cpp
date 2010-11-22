@@ -29,7 +29,8 @@
 namespace ti
 {
 	File::File(std::string filename) :
-		StaticBoundObject("Filesystem.File")
+		StaticBoundObject("Filesystem.File"),
+		notifyCallback(0)
 	{
 
 		Poco::Path pocoPath(Poco::Path::expand(filename));
@@ -779,26 +780,36 @@ namespace ti
 		}
 	}
 
-	void File::Watch(KMethodRef callback, uint32_t mask, KValueRef result)
+	void File::Watch(KMethodRef nCallback, const ValueList& nargs, uint32_t nmask, KValueRef result)
 	{
-		fd = inotify_init();
-		if (fd == -1)
-		{
-			result->SetBool(false);
-			throw ValueException::FromString("inotify init failed");
-		}
-		wd = inotify_add_watch(fd, this->filename.c_str(), mask);
-		// read and callback will follow here
-		// need to allocate this buffer!!!!!
+		notifyMask = nmask;
+		this->notifyCallback = nCallback;
+		KMethodRef work; // (new kroll::KFunctionPtrMethod(&File::NotifyWorker));
 
-		// this will be used to perform the read of inotify, will
-		// use fd in our File class.
-		// len = read(fd, buffer, INOTIFY_BUFLEN);
-		// will add this for the callback
-		// Host::RunOnMainThread(callback, valueList, false)// callback();
-
-		// Host::RunOnMainThread(KMethodRef, ValueList &args, false)
+		// I want to run this off/away from the main thread, and will notify back using this.
+		// I'm not sure what to use. Poco::Thread ???
+		RunOnMainThread(work, nargs, false);
 
 		result->SetBool(true);
 	}
+
+	// void File::NotifyWorker(KMethodRef ncallback, const ValueList& nargs, uint32_t nmask)
+	void File::NotifyWorker()
+	{
+		this->fd = inotify_init();
+		if (this->fd == -1)
+		{
+			throw ValueException::FromString("inotify init failed");
+		}
+		this->wd = inotify_add_watch(fd, this->filename.c_str(), notifyMask);
+
+		// Should this be done on this thread? is there a read class in kroll?
+		
+		// I am anticipating that NotifyWorker will be on it's own thread,
+		// even though it is started with RunOnMainThread. Not sure which class
+		// to use though.
+
+		// len = read(this->fd, this->buffer, INOTIFY_BUFLEN);
+	}
+
 }

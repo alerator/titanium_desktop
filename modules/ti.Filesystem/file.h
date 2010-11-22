@@ -42,6 +42,8 @@ namespace ti
 		std::string filename;
 		int fd;			// file descriptor for inotify
 		int wd;			// watch descriptor for inotify
+		uint32_t notifyMask;
+		KMethodRef notifyCallback;
 
 		void Open(const ValueList& args, KValueRef result);
 		void ToString(const ValueList& args, KValueRef result);
@@ -77,7 +79,8 @@ namespace ti
 		void SetReadonly(const ValueList& args, KValueRef result);
 		void SetWritable(const ValueList& args, KValueRef result);
 		void Unzip(const ValueList& args, KValueRef result);
-		void Watch(KMethodRef callback, uint32_t mask, KValueRef result);
+		void Watch(KMethodRef callback, const ValueList& nargs, uint32_t nmask, KValueRef result);
+		void NotifyWorker();
 	};
 }
 
