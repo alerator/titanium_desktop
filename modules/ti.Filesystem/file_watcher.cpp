@@ -34,12 +34,20 @@ namespace ti
 		}
 	}
 
+	void FileWatcher::read()
+	{
+
+	}
+
 	void FileWatcher::start(FileWatcher::EventType events)
 	{
 		wd = inotify_add_watch(fd, notifypath.c_str(), events);
 		if(wd != 0)
 		{
 			throw ValueException::FromString("inotify_add_watch failed");
+		} else
+		{
+			// readThread.Start(runnableAdapter);
 		}
 	}
 
