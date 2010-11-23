@@ -79,7 +79,7 @@ namespace ti
 		void SetReadonly(const ValueList& args, KValueRef result);
 		void SetWritable(const ValueList& args, KValueRef result);
 		void Unzip(const ValueList& args, KValueRef result);
-		void Watch(FileWatcher::EventType event, KValueRef result);
+		FileWatcher& Watch(FileWatcher::EventType event, KValueRef result);
 	};
 }
 

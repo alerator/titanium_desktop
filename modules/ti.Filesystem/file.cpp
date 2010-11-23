@@ -781,10 +781,11 @@ namespace ti
 		}
 	}
 
-	void File::Watch(FileWatcher::EventType events, KValueRef result)
+	FileWatcher& File::Watch(FileWatcher::EventType events, KValueRef result)
 	{
 		watcher.start(events);
 
 		result->SetBool(true);
+		return this->watcher;
 	}
 }
