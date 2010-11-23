@@ -45,7 +45,6 @@ namespace ti
 		int wd;			// watch descriptor for inotify
 		FileWatcher watcher;
 
-
 		void Open(const ValueList& args, KValueRef result);
 		void ToString(const ValueList& args, KValueRef result);
 		void ToURL(const ValueList& args, KValueRef result);

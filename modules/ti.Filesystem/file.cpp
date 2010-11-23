@@ -17,6 +17,7 @@
 
 #ifdef OS_LINUX
 #include <sys/statvfs.h>
+#include "file_watcher.h"
 #endif
 
 #ifdef OS_WIN32
