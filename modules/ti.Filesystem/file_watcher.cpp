@@ -24,7 +24,12 @@ namespace ti
 	{
 		if(fd == 0)
 		{
-			inotify_rm_watch(fd, wd);
+			int ret = 0;
+			ret = inotify_rm_watch(fd, wd);
+			if(ret != 0)
+			{
+				throw ValueException::FromString("inotify_rm_watch failed");
+			}
 			close(fd);
 		}
 	}

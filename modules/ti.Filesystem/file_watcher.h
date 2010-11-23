@@ -43,7 +43,6 @@ namespace ti
 		int wd;			// watch descriptor for inotify
 
 		EventType notifyevents;
-
 	};
 }
 
