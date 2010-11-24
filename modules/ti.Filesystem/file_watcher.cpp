@@ -10,7 +10,9 @@
 
 namespace ti
 {
-	FileWatcher::FileWatcher(const char* filepath)
+	FileWatcher::FileWatcher(const char* filepath) :
+		KEventObject("Filesystem.FileWatcher"),
+		readAdapter(*this, &FileWatcher::ReadThread)
 	{
 		notifypath = filepath;
 		fd = inotify_init();
@@ -34,12 +36,12 @@ namespace ti
 		}
 	}
 
-	void FileWatcher::read()
+	void FileWatcher::ReadThread()
 	{
 
 	}
 
-	void FileWatcher::start(FileWatcher::EventType events)
+	void FileWatcher::StartWatch(FileWatcher::EventType events)
 	{
 		wd = inotify_add_watch(fd, notifypath.c_str(), events);
 		if(wd != 0)
@@ -47,11 +49,11 @@ namespace ti
 			throw ValueException::FromString("inotify_add_watch failed");
 		} else
 		{
-			// readThread.Start(runnableAdapter);
+			this->readThread.start(readAdapter);
 		}
 	}
 
-	void FileWatcher::stop()
+	void FileWatcher::StopWatch()
 	{
 		int ret = 0;
 		ret = inotify_rm_watch(fd, wd);

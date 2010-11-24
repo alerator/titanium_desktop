@@ -32,12 +32,12 @@ namespace ti
 	public:
 		File(std::string filename);
 		virtual ~File();
-
 		std::string& GetFilename() { return this->filename; }
 		virtual SharedString DisplayString(int levels=3)
 		{
 			return new string(GetFilename());
 		}
+		FileWatcher& Watch(FileWatcher::EventType event, KValueRef result);
 
 	private:
 		std::string filename;
@@ -79,7 +79,6 @@ namespace ti
 		void SetReadonly(const ValueList& args, KValueRef result);
 		void SetWritable(const ValueList& args, KValueRef result);
 		void Unzip(const ValueList& args, KValueRef result);
-		FileWatcher& Watch(FileWatcher::EventType event, KValueRef result);
 	};
 }
 

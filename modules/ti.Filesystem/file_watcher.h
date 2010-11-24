@@ -34,16 +34,18 @@ namespace ti
 		FileWatcher(const char* filepath);
 		virtual ~FileWatcher();
 
-		void read();
-		void start(FileWatcher::EventType event);
-		void stop();
+		void StartWatch(FileWatcher::EventType event);
+		void StopWatch();
 		
 	private:
 		std::string notifypath;
 		int fd;			// file descriptor for inotify
 		int wd;			// watch descriptor for inotify
-		// RunnableAdapter<FileWatcher> runnableAdapter;
-		// Thread readThread;
+
+		void ReadThread();
+
+		Poco::RunnableAdapter<FileWatcher> readAdapter;
+		Poco::Thread readThread;
 
 
 		EventType notifyevents;

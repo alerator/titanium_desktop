@@ -80,7 +80,6 @@ namespace ti
 		this->SetMethod("setWriteable", &File::SetWritable);
 		this->SetMethod("setWritable", &File::SetWritable);
 		this->SetMethod("unzip", &File::Unzip);
-		// this->SetMethod("watch", &File::Watch);
 	}
 
 	File::~File()
@@ -781,9 +780,9 @@ namespace ti
 		}
 	}
 
-	FileWatcher& File::Watch(FileWatcher::EventType events, KValueRef result)
+	FileWatcher& File::Watch(FileWatcher::EventType event, KValueRef result)
 	{
-		watcher.start(events);
+		watcher.StartWatch(event);
 
 		result->SetBool(true);
 		return this->watcher;
