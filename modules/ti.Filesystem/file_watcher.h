@@ -9,6 +9,10 @@
 
 #include <sys/inotify.h>
 #include <string>
+#include <errno.h>
+
+#define INOTIFY_EVENT_SIZE (sizeof(struct inotify_event))
+#define INOTIFY_BUFLEN (1024 * (INOTIFY_EVENT_SIZE + 16))
 
 namespace ti
 {
@@ -41,6 +45,7 @@ namespace ti
 		std::string notifypath;
 		int fd;			// file descriptor for inotify
 		int wd;			// watch descriptor for inotify
+		unsigned char readBuffer[INOTIFY_BUFLEN];
 
 		void ReadThread();
 

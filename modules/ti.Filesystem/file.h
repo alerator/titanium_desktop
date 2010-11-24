@@ -17,10 +17,7 @@
 #elif OS_OSX
 #import <Foundation/Foundation.h>
 #elif OS_LINUX
-#include <sys/inotify.h>
 #include "file_watcher.h"
-#define INOTIFY_EVENT_SIZE (sizeof(struct inotify_event))
-#define INOTIFY_BUFLEN (1024 * (INOTIFY_EVENT_SIZE + 16))
 #endif
 
 #include <string>

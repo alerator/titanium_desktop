@@ -18,7 +18,8 @@ namespace ti
 		fd = inotify_init();
 		if(fd != 0)
 		{
-			throw ValueException::FromString("inotify init failed");
+			throw ValueException::FromFormat("inotify init failed: %s (%d)",
+											  strerror(errno), errno);
 		}
 	}
 
@@ -30,7 +31,8 @@ namespace ti
 			ret = inotify_rm_watch(fd, wd);
 			if(ret != 0)
 			{
-				throw ValueException::FromString("inotify_rm_watch failed");
+				throw ValueException::FromFormat("inotify_rm_watch failed: %s (%d)",
+												  strerror(errno), errno);
 			}
 			close(fd);
 		}
@@ -38,7 +40,22 @@ namespace ti
 
 	void FileWatcher::ReadThread()
 	{
+		bool done=false;
+		do
+		{
+			int len = 0;
+			len = read(fd, readBuffer, INOTIFY_BUFLEN);
+			if(len == -1)
+			{
+				done = true;
+				throw ValueException::FromFormat("read() error for inotify in ReadThread(): %s (%d)",
+												  strerror(errno), errno);
+			} else
+			{
+				// need to notify caller here
 
+			}
+		} while(!done);
 	}
 
 	void FileWatcher::StartWatch(FileWatcher::EventType events)
@@ -46,7 +63,8 @@ namespace ti
 		wd = inotify_add_watch(fd, notifypath.c_str(), events);
 		if(wd != 0)
 		{
-			throw ValueException::FromString("inotify_add_watch failed");
+			throw ValueException::FromFormat("inotify_add_watch failed: %s (%d)",
+											  strerror(errno), errno);
 		} else
 		{
 			this->readThread.start(readAdapter);
@@ -59,7 +77,8 @@ namespace ti
 		ret = inotify_rm_watch(fd, wd);
 		if (ret != 0)
 		{
-			throw ValueException::FromString("inotify_rm_watch failed");
+			throw ValueException::FromFormat("inotify_rm_watch failed: %s (%d)",
+											  strerror(errno), errno);
 		}
 	}
 }
