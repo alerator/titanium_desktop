@@ -34,7 +34,7 @@ namespace ti
 		{
 			return new string(GetFilename());
 		}
-		FileWatcher& Watch(FileWatcher::EventType event, KValueRef result);
+		FileWatcher& Watch(const ValueList& args, KValueRef result);
 
 	private:
 		std::string filename;

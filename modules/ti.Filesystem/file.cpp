@@ -780,11 +780,11 @@ namespace ti
 		}
 	}
 
-	FileWatcher& File::Watch(FileWatcher::EventType event, KValueRef result)
+	FileWatcher& File::Watch(const ValueList& args, KValueRef result)
 	{
-		watcher.StartWatch(event);
+		watcher.watch (args.GetDouble(0), args.GetMethod(1));
 
-		result->SetBool(true);
+		result->SetBool (true);
 		return this->watcher;
 	}
 }

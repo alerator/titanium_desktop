@@ -12,7 +12,8 @@ namespace ti
 {
 	FileWatcher::FileWatcher(const char* filepath) :
 		KEventObject("Filesystem.FileWatcher"),
-		readAdapter(*this, &FileWatcher::ReadThread)
+		readAdapter(*this, &FileWatcher::ReadThread),
+		callback(0)
 	{
 		notifypath = filepath;
 		fd = inotify_init();
@@ -52,15 +53,17 @@ namespace ti
 												  strerror(errno), errno);
 			} else
 			{
-				// need to notify caller here
-
+				ValueList args(Value::NewString ((const char*) readBuffer));
+				this->callback->Call(args);
 			}
 		} while(!done);
 	}
 
-	void FileWatcher::StartWatch(FileWatcher::EventType events)
+	void FileWatcher::watch(double mask, KMethodRef newCallback)
 	{
-		wd = inotify_add_watch(fd, notifypath.c_str(), events);
+		this->callback = newCallback;
+
+		wd = inotify_add_watch(fd, notifypath.c_str(), mask);
 		if(wd != 0)
 		{
 			throw ValueException::FromFormat("inotify_add_watch failed: %s (%d)",
@@ -71,7 +74,7 @@ namespace ti
 		}
 	}
 
-	void FileWatcher::StopWatch()
+	void FileWatcher::unwatch()
 	{
 		int ret = 0;
 		ret = inotify_rm_watch(fd, wd);
